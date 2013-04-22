@@ -4,5 +4,3 @@
  * Time: 14:20
  * To change this template use File | Settings | File Templates.
  */
-alert('asdas');
-alert('asdas');
