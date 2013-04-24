@@ -1,26 +1,43 @@
-/**
+﻿/**
  * User: Самородов Колюха
  * Date: 22.04.13
  * Time: 14:20
  * To change this template use File | Settings | File Templates.
  */
+/*jslint browser: true*/
+/*global console*/
 var SNN = SNN || {};
-//пространство имен
-SNN.namespace = function (ns) {
-    var parts = ns.split('.'),
-        parent = SNN,
-        i;
-    //удаляем префикс
-    if (parts[0] === 'SNN') {
-        parts = parts.slice(1);
-    }
 
-    for (i = 0;i < parts.length; i += 1) {
-        //создаем свойствое если его нет
-        if (typeof parent[parts[i]] === "undefined") {
-            parent[parts[i]] = {};
-        }
-        parent = [parts[i]]
+//Конструктор изолированного пространства
+SNN = function () {
+    "use strict";
+    var args = Array.prototype.slice.call(arguments),
+        callback = args.pop(),
+        modules = (args[0] && typeof args[0] === "string") ? args : args[0],
+        i;
+    if (!(this instanceof SNN)) {
+        return new SNN(modules, callback);
     }
-    return parent;
+    if (!modules || modules === '*') {
+        modules = [];
+        for (i in SNN.modules) {
+            if (SNN.modules.hasOwnProperty(i)) {
+                modules.push(i);
+            }
+        }
+    }
+    for (i = 0; i < modules.length; i += 1) {
+        if (typeof SNN.modules[modules[i]] === 'function') {
+            SNN.modules[modules[i]](this);
+        } else {
+            console.log('Не удалось подключить модуль ' + modules[i]);
+        }
+    }
+    callback(this);
+};
+SNN.modules = {};
+SNN.modules.calendar = function (SNN) {
+    "use strict";
+    SNN.renderCalendar = function () {
+    };
 };
